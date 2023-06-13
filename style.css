@@ -1,0 +1,57 @@
+#container-heading{
+text-align: center;
+font-size: 82px;
+color:dodgerblue;
+
+
+
+
+}
+#addTaskSection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin-left:60%;
+  }
+  
+  #newTaskInput {
+    flex: 1;
+    margin-left: 44%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin-top: 8%;
+    margin-bottom: 2%;
+    
+    
+  }
+  
+  #addTaskBtn {
+    background-color: #76a1d3;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  #todos {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+.todos {
+text-align: center; 
+background-color: transparent;
+border: 2px solid dodgerblue;
+gap: 12%;
+margin-left: 20%;
+margin-right: 20%;
+border-radius: 12% 0;}
+.todos h1{
+    background-color: antiquewhite;
+}
+#div{
+    background-color: aqua;
+}
+
