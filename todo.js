@@ -1,33 +1,87 @@
 const todoContainer = document.getElementById('todos');
-let todosData = null; // Store the fetched todos data
-
 const getTodos = () => {
-  return fetch('https://dummyjson.com/users/5/todos')
+  return fetch('https://dummyjson.com/todos')
     .then(response => response.json())
     .then(response => {
-      todosData = response; // Save the fetched todos data
+      todosData = response; 
       return response;
     })
     .catch(error => error);
 }
 
-const toggleCompleted = (item) => {
-  item.completed = !item.completed; // Toggle the 'completed' property
+const toggleCompleted = async (item) => {
+  item.completed = !item.completed; 
   const div = document.querySelector(`div[key="${item.id}"]`);
-  const completed = div.querySelector('.todo-completed'); // Update the class name here
+  const completed = div.querySelector('.todo-completed'); 
   completed.textContent = `Completed: ${item.completed}`;
+
+  try {
+    const response = await fetch(`https://dummyjson.com/todos/${item.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    });
+
+    if (response.ok) {
+      console.log('Task updated:', item);
+    } else {
+      console.log('Failed to update task:', response.status);
+    }
+  } catch (error) {
+    console.log('Error occurred while updating task:', error);
+  }
 }
 
-const deleteTask = (taskId) => {
-  const div = document.querySelector(`div[key="${taskId}"]`);
-  const taskIndex = todosData.todos.findIndex(item => item.id === taskId);
-  if (taskIndex !== -1) {
-    const deletedTask = todosData.todos.splice(taskIndex, 1)[0];
-    div.remove();
-    console.log('Task Deleted:', deletedTask);
-  } else {
-    console.log('Task not found');
-  }
+const deleteTask = (taskElement) => {
+  const taskId = taskElement.getAttribute('key');
+  taskElement.remove();
+  console.log('Task Deleted:', taskId);
+}
+
+const updateTask = (item) => {
+  const div = document.querySelector(`div[key="${item.id}"]`);
+  const todo = div.querySelector('h2');
+  const updateButton = div.querySelector('.update-button');
+  todo.contentEditable = true;
+  todo.focus();
+  updateButton.disabled = true;
+
+  const saveChanges = () => {
+    todo.contentEditable = false;
+    updateButton.disabled = false;
+    const updatedTask = {
+      userId: item.userId,
+      id: item.id,
+      todo: todo.textContent.trim(),
+      completed: item.completed
+    };
+    Object.assign(item, updatedTask); 
+    console.log('Task updated:', item);
+  };
+
+  const cancelChanges = () => {
+    todo.contentEditable = false;
+    updateButton.disabled = false;
+    todo.textContent = item.todo;
+  };
+
+  todo.addEventListener('input', () => {
+    updateButton.disabled = false;
+  });
+
+  todo.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      saveChanges();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      cancelChanges();
+    }
+  });
+
+  updateButton.addEventListener('click', saveChanges);
 }
 
 const addTask = (userId, task) => {
@@ -37,10 +91,11 @@ const addTask = (userId, task) => {
   const userIdElement = document.createElement('p');
   const completed = document.createElement('p');
   const deleteButton = document.createElement('span');
+  const updateButton = document.createElement('button');
 
   const newTask = {
     userId: userId,
-    id: Math.floor(Math.random() * 1000) + 100, // Generate a random ID for the new task
+    id: Math.floor(Math.random() * 1000) + 100, 
     todo: task,
     completed: false
   };
@@ -49,22 +104,29 @@ const addTask = (userId, task) => {
   todo.innerHTML = newTask.todo;
   userIdElement.innerHTML = newTask.userId;
   completed.innerHTML = `Completed: ${newTask.completed}`;
-  completed.classList.add('todo-completed'); // Update the class name here
+  completed.classList.add('todo-completed'); 
 
   deleteButton.innerHTML = 'Delete';
-  deleteButton.classList.add('delete-button'); // Add class for styling
-  deleteButton.addEventListener('click', () => deleteTask(newTask.id));
+  deleteButton.classList.add('delete-button'); 
+  deleteButton.addEventListener('click', () => deleteTask(div));
+
+  updateButton.innerHTML = 'Update'; 
+  updateButton.classList.add('update-button'); 
+  updateButton.addEventListener('click', () => updateTask(newTask));
 
   div.appendChild(id);
   div.appendChild(todo);
   div.appendChild(completed);
   div.appendChild(userIdElement);
   div.appendChild(deleteButton);
+  div.appendChild(updateButton); 
   div.setAttribute('key', newTask.id);
   div.setAttribute('class', 'todo');
 
   todoContainer.appendChild(div);
   console.log('New Task Added:', newTask);
+
+  div.addEventListener('click', () => toggleCompleted(newTask)); 
 }
 
 const displayTodos = async () => {
@@ -77,28 +139,34 @@ const displayTodos = async () => {
     let userId = document.createElement('p');
     let completed = document.createElement('p');
     const deleteButton = document.createElement('span');
+    const updateButton = document.createElement('button'); 
 
     id.innerHTML = item.id;
     todo.innerHTML = item.todo;
     userId.innerHTML = item.userId;
     completed.innerHTML = `Completed: ${item.completed}`;
-    completed.classList.add('todo-completed'); // Update the class name here
+    completed.classList.add('todo-completed'); 
 
     deleteButton.innerHTML = 'Delete';
-    deleteButton.classList.add('delete-button'); // Add class for styling
-    deleteButton.addEventListener('click', () => deleteTask(item.id));
+    deleteButton.classList.add('delete-button'); 
+    deleteButton.addEventListener('click', () => deleteTask(div));
+
+    updateButton.innerHTML = 'Update'; 
+    updateButton.classList.add('update-button'); 
+    updateButton.addEventListener('click', () => updateTask(item));
 
     div.appendChild(id);
     div.appendChild(todo);
     div.appendChild(completed);
     div.appendChild(userId);
     div.appendChild(deleteButton);
+    div.appendChild(updateButton); 
     div.setAttribute('key', item.id);
     div.setAttribute('class', 'todo');
 
     todoContainer.appendChild(div);
 
-    div.addEventListener('click', () => toggleCompleted(item)); // Add event listener to toggle completion
+    div.addEventListener('click', () => toggleCompleted(item)); 
   });
 }
 
@@ -107,9 +175,9 @@ const newTaskInput = document.getElementById('newTaskInput');
 
 addTaskBtn.addEventListener('click', () => {
   const task = newTaskInput.value;
-  const userId = 1; // Replace with the desired user ID
+  const userId = 1; 
   addTask(userId, task);
-  newTaskInput.value = ''; // Clear the input field
+  newTaskInput.value = ''; 
 });
 
 displayTodos();

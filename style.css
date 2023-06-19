@@ -1,10 +1,7 @@
 #container-heading{
 text-align: center;
 font-size: 82px;
-color:dodgerblue;
-
-
-
+color:rgb(0, 0, 0);
 
 }
 #addTaskSection {
@@ -23,35 +20,59 @@ color:dodgerblue;
     border: 1px solid #ccc;
     margin-top: 8%;
     margin-bottom: 2%;
+    border: 2px solid black;
     
     
   }
   
   #addTaskBtn {
-    background-color: #76a1d3;
+    background-color: #f32626;
     color: #fff;
     padding: 5px 10px;
     border: none;
     cursor: pointer;
+    border-radius: 5%;
   }
   
   #todos {
-    background-color: #f9f9f9;
+    /* background-color: #e6cccc; */
     padding: 10px;
     border: 1px solid #ccc;
+  }
+  .todo{
+background-color: #e0baba;
+border: 2px solid black;
+margin-bottom:5% ;
   }
 .todos {
 text-align: center; 
 background-color: transparent;
-border: 2px solid dodgerblue;
+border: 2px solid rgb(0, 0, 0);
 gap: 12%;
 margin-left: 20%;
 margin-right: 20%;
-border-radius: 12% 0;}
+/* border-radius: 12% 0;} */}
 .todos h1{
     background-color: antiquewhite;
 }
 #div{
     background-color: aqua;
 }
+.update-button{
+  border: 2px solid black;
+  margin-left: 5%; 
+  background-color: transparent;
+  border-radius: 10%;
+  color: #000000;
+  margin-bottom: 5%;
+}
+.todo-completed{
+color: #fc0000;
+}
+/* .delete-button{
+  border: 2px solid black;
+  padding-left:2px;
+  padding-right: 2px;
+  border-radius: 10%;
+} */
 
